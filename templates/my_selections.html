@@ -1,0 +1,191 @@
+<!-- templates/my_selections.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="fas fa-history me-2"></i>
+        История моих выборов
+    </h1>
+    
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-gift fa-3x mb-2"></i>
+                    <h5>Всего выборов</h5>
+                    <h2 class="display-6">{{ selections.count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-coins fa-3x mb-2"></i>
+                    <h5>Потрачено всего</h5>
+                    <h2 class="display-6">{{ total_spent }} Аринкойнов</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-star fa-3x mb-2"></i>
+                    <h5>Разных активностей</h5>
+                    <h2 class="display-6">{{ unique_activities }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Группировка по активностям -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" id="selectionTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#all" type="button" role="tab">
+                                📋 Все выборы
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="grouped-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#grouped" type="button" role="tab">
+                                📊 По активностим
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-body">
+                    <div class="tab-content">
+                        <!-- Вкладка: Все выборы по датам -->
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Дата</th>
+                                            <th>Активность</th>
+                                            <th>Категория</th>
+                                            <th>Стоимость</th>
+                                            <th>Пожелания</th>
+                                            <th>Статус</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for selection in selections %}
+                                        <tr>
+                                            <td>{{ selection.selected_at|date:"d.m.Y H:i" }}</td>
+                                            <td>
+                                                <strong>{{ selection.activity.name }}</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">
+                                                    {{ selection.activity.category.name }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-warning text-dark">
+                                                    {{ selection.activity.price }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if selection.notes %}
+                                                    <span data-bs-toggle="tooltip" title="{{ selection.notes }}">
+                                                        <i class="fas fa-comment"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if selection.is_confirmed %}
+                                                    <span class="badge bg-success">✅ Подтверждено</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">⏳ Ожидает</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-5">
+                                                <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                                                <h5 class="text-muted">Ты еще ничего не выбрала</h5>
+                                                <a href="{% url 'categories' %}" class="btn btn-primary mt-3">
+                                                    <i class="fas fa-gift me-2"></i>Выбрать приключение!
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Вкладка: Группировка по активностям -->
+                        <div class="tab-pane fade" id="grouped" role="tabpanel">
+                            <div class="row">
+                                {% regroup selections by activity as activity_list %}
+                                {% for activity_group in activity_list %}
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-{{ forloop.counter0|divisibleby:2|yesno:'primary,success' }}">
+                                        <div class="card-header bg-{{ forloop.counter0|divisibleby:2|yesno:'primary,success' }} text-white">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">{{ activity_group.grouper.name }}</h5>
+                                                <span class="badge bg-light text-dark">
+                                                    {{ activity_group.list|length }} раз(а)
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-2">
+                                                <span class="badge bg-secondary">{{ activity_group.grouper.category.name }}</span>
+                                                <span class="badge bg-warning text-dark ms-2">{{ activity_group.grouper.price }} Аринкойнов</span>
+                                            </p>
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-clock me-1"></i>{{ activity_group.grouper.duration }}
+                                                <i class="fas fa-map-marker-alt ms-3 me-1"></i>{{ activity_group.grouper.location }}
+                                            </p>
+                                            <hr>
+                                            <div class="small">
+                                                <strong>Последний выбор:</strong> 
+                                                {{ activity_group.list.0.selected_at|date:"d.m.Y H:i" }}
+                                            </div>
+                                            <div class="mt-2">
+                                                <a href="{% url 'select_activity' activity_group.grouper.id %}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-plus-circle me-1"></i>Выбрать еще раз
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12 text-center py-5">
+                                    <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Нет данных для статистики</h5>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Инициализация тултипов
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+</script>
+{% endblock %}

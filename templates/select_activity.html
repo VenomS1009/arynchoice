@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center"><i class="fas fa-check-circle me-2"></i>Подтверждение выбора</h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="heart" style="font-size: 4rem;">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h2>Ты выбрала: {{ activity.name }}</h2>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-info-circle me-2"></i>Информация</h5>
+                                    <p><strong>Категория:</strong> {{ activity.category.name }}</p>
+                                    <p><strong>Продолжительность:</strong> {{ activity.duration }}</p>
+                                    <p><strong>Место:</strong> {{ activity.location }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-coins me-2"></i>Стоимость</h5>
+                                    <div class="text-center py-3">
+                                        <div class="coin-badge fs-2 mb-2">
+                                            {{ activity.price }} Аринкойнов
+                                        </div>
+                                        <p class="mb-0">
+                                            У тебя останется: <strong>{{ profile.arincoins|add:"-"|add:activity.price|add:activity.price }}</strong> Аринкойнов
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if activity.image %}
+                    <div class="text-center mb-4">
+                        <img src="{{ activity.image.url }}" alt="{{ activity.name }}" 
+                             class="img-fluid rounded" style="max-height: 300px;">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <h5><i class="fas fa-file-alt me-2"></i>Описание</h5>
+                        <p class="lead">{{ activity.description }}</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">
+                                <i class="fas fa-sticky-note me-2"></i>Твои пожелания (необязательно)
+                            </label>
+                            <textarea name="notes" id="notes" class="form-control" 
+                                      rows="3" placeholder="Например: Хочу в субботу вечером..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'category_detail' activity.category.id %}" 
+                               class="btn btn-outline-secondary btn-lg me-md-3">
+                                <i class="fas fa-arrow-left me-2"></i>Назад
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-2"></i>Да, выбираю это!
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .heart {
+        color: #ff6b8b;
+        animation: heartbeat 1.5s infinite;
+    }
+    
+    @keyframes heartbeat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}

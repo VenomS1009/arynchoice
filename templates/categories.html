@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4 mb-3">🎁 Выбери наше приключение!</h1>
+    <p class="lead">У тебя есть <span class="coin-badge">{{ user.userprofile.arincoins }} Аринкойнов</span></p>
+    <p class="text-muted">Каждая категория - это мир возможностей. Выбирай то, что по душе!</p>
+</div>
+
+<div class="row">
+    {% for category in categories %}
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'category_detail' category.id %}" class="text-decoration-none">
+            <div class="category-card h-100">
+                <div class="category-icon">
+                    <i class="{{ category.icon }}"></i>
+                </div>
+                <h3>{{ category.name }}</h3>
+                <p class="text-muted">{{ category.description|truncatechars:100 }}</p>
+                <span class="badge bg-primary">
+                    {{ category.activities.count }} вариантов
+                </span>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="text-center mt-5">
+    <div class="card border-primary">
+        <div class="card-body">
+            <h5><i class="fas fa-info-circle me-2"></i>Как это работает?</h5>
+            <ol class="text-start">
+                <li>Выбери категорию</li>
+                <li>Просмотри доступные активности</li>
+                <li>Нажми "Выбрать" на понравившейся</li>
+                <li>Оставь пожелания (необязательно)</li>
+                <li>Я получу уведомление и мы воплотим это в жизнь! ❤️</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

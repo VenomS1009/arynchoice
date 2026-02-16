@@ -1,0 +1,72 @@
+{% if requests %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Дата</th>
+                <th>Задание</th>
+                <th>Описание</th>
+                <th>Награда</th>
+                <th>Статус</th>
+                <th>Комментарий</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ req.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <strong>{{ req.method.name }}</strong>
+                </td>
+                <td>
+                    <span data-bs-toggle="tooltip" title="{{ req.proof_text|truncatechars:200 }}">
+                        {{ req.proof_text|truncatechars:50 }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-warning text-dark">
+                        +{{ req.coins_awarded|default:req.method.reward }}
+                    </span>
+                </td>
+                <td>
+                    {% if req.status == 'pending' %}
+                        <span class="badge bg-warning">⏳ Ожидает</span>
+                    {% elif req.status == 'approved' %}
+                        <span class="badge bg-success">✅ Начислено</span>
+                    {% elif req.status == 'rejected' %}
+                        <span class="badge bg-danger">❌ Отклонено</span>
+                    {% else %}
+                        <span class="badge bg-secondary">🚫 Отменено</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if req.admin_comment %}
+                        <span data-bs-toggle="tooltip" title="{{ req.admin_comment }}">
+                            <i class="fas fa-comment-dots text-primary"></i>
+                        </span>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Нет заявок в этой категории</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+    <h5 class="text-muted">Пока нет заявок</h5>
+    <p class="text-muted">Выполни задание, чтобы заработать Аринкойны!</p>
+    <a href="{% url 'earn_page' %}" class="btn btn-primary mt-2">
+        <i class="fas fa-coins me-2"></i>Заработать
+    </a>
+</div>
+{% endif %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="heart mb-4" style="font-size: 5rem;">
+        <i class="fas fa-heart"></i>
+    </div>
+    
+    <h1 class="display-3 mb-4">Добро пожаловать в ArynChoice! 💖</h1>
+    
+    <p class="lead mb-5" style="font-size: 1.5rem;">
+        Место, где ты выбираешь наше следующее романтическое приключение
+    </p>
+    
+    {% if user.is_authenticated %}
+        <div class="card border-success mb-5" style="max-width: 600px; margin: 0 auto;">
+            <div class="card-body">
+                <h4 class="card-title">🎉 Привет, {{ user.username }}!</h4>
+                <p class="card-text">
+                    У тебя есть <span class="badge bg-warning text-dark fs-5">
+                        {{ user.userprofile.arincoins }} Аринкойнов
+                    </span>
+                </p>
+                <a href="{% url 'categories' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-gift me-2"></i>Выбрать приключение!
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-5 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">👑 Для особенного доступа</h3>
+                        <p class="card-text">Если у тебя есть приглашение</p>
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">🔑 Уже есть доступ?</h3>
+                        <p class="card-text">Войди в свой аккаунт</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="mt-5">
+        <h3 class="mb-4">🎁 Как это работает?</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-3 mb-3">
+                <div class="p-3 border rounded text-center h-100">
+                    <div class="fs-1 mb-3">1️⃣</div>
+                    <h5>Получаешь Аринкойны</h5>
+                    <p>На старте 100 монет для выбора приключений</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="p-3 border rounded text-center h-100">
+                    <div class="fs-1 mb-3">2️⃣</div>
+                    <h5>Выбираешь активность</h5>
+                    <p>Рестораны, кино, прогулки и многое другое</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="p-3 border rounded text-center h-100">
+                    <div class="fs-1 mb-3">3️⃣</div>
+                    <h5>Я получаю уведомление</h5>
+                    <p>Мгновенное сообщение в Telegram о твоем выборе</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="p-3 border rounded text-center h-100">
+                    <div class="fs-1 mb-3">4️⃣</div>
+                    <h5>Воплощаем в жизнь!</h5>
+                    <p>Организую выбранное приключение для нас</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .heart {
+        color: #ff6b8b;
+        animation: heartbeat 1.5s infinite;
+    }
+    
+    @keyframes heartbeat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}
